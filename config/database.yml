@@ -1,0 +1,12 @@
+# This file shouldn't be touched
+# This is legacy because of gobuffalo/pop's hard requirement on this file
+
+development:
+  url: {{ env "DATABASE_URI" }}
+
+test:
+  url: {{ env "DATABASE_URI" }}
+
+production:
+  url: {{ env "DATABASE_URI" }}
+

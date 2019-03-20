@@ -1,0 +1,12 @@
+create_table("transactions") {
+	t.Column("id", "bigint", {primary: true})
+	t.Column("sender", "int", {"null": false})
+	t.Column("receiver", "int", {"null": false})
+	t.Column("amount", "numeric", {"null": false})
+}
+
+sql("
+	ALTER TABLE transactions 
+	ADD CONSTRAINT amount_gt_zero
+	CHECK (amount > 0);
+")

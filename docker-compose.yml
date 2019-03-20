@@ -1,0 +1,34 @@
+---
+version: "3"
+
+services:
+  kalicoin:
+    image: golang:1.12
+    volumes:
+      - .:/go/src/kalicoin
+    working_dir: /go/src/kalicoin
+    command: go run cmd/kalicoin/main.go
+    environment:
+      DATABASE_URI: "postgres://user:pass@postgres:5432/kalicoin?sslmode=disable"
+      ENVIRONMENT: "development"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:11
+    environment:
+      POSTGRES_DB: "kalicoin"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "pass"
+    ports:
+      - 5432:5432
+
+  pg_admin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "kali@local.int"
+      PGADMIN_DEFAULT_PASSWORD: "kalicoin"
+    depends_on:
+      - postgres
+    ports:
+      - 8080:80
