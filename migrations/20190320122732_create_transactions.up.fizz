@@ -8,5 +8,5 @@ create_table("transactions") {
 sql("
 	ALTER TABLE transactions 
 	ADD CONSTRAINT amount_gt_zero
-	CHECK (amount > 0);
+	CHECK (amount >= 0);
 ")
