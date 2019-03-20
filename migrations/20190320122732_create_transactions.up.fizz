@@ -1,12 +1,14 @@
-create_table("transactions") {
-	t.Column("id", "bigint", {primary: true})
-	t.Column("sender", "int", {"null": false})
-	t.Column("receiver", "int", {"null": false})
-	t.Column("amount", "numeric", {"null": false})
-}
-
 sql("
-	ALTER TABLE transactions 
-	ADD CONSTRAINT amount_gt_zero
-	CHECK (amount >= 0);
+    CREATE TYPE transaction_type AS ENUM('trade', 'payment');
+    
+    CREATE TABLE transactions (
+        id BIGSERIAL NOT NULL,
+        PRIMARY KEY(id),
+        type transaction_type NOT NULL,
+        sender int NOT NULL,
+        receiver int,
+        amount numeric NOT NULL CHECK (amount >= 0),
+        created_at timestamp NOT NULL,
+        updated_at timestamp NOT NULL
+    );
 ")

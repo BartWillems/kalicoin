@@ -1,6 +1,7 @@
 package main
 
 import (
+	"kalicoin/pkg/api"
 	"kalicoin/pkg/db"
 	"os"
 
@@ -14,6 +15,13 @@ func main() {
 	}
 
 	if err := db.Migrate(); err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
+
+	router := api.New(db.Conn)
+
+	if err := router.Run(":8000"); err != nil {
 		log.Error(err)
 		os.Exit(1)
 	}

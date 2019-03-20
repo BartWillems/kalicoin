@@ -7,10 +7,12 @@ services:
     volumes:
       - .:/go/src/kalicoin
     working_dir: /go/src/kalicoin
-    command: go run cmd/kalicoin/main.go
+    command: go run kalicoin
     environment:
       DATABASE_URI: "postgres://user:pass@postgres:5432/kalicoin?sslmode=disable"
       ENVIRONMENT: "development"
+    ports:
+      - 8000:8000
     depends_on:
       - postgres
 
