@@ -16,23 +16,29 @@ func New(conn *pop.Connection) *gin.Engine {
 
 	router := gin.Default()
 
-	router.POST("/payment", pay)
+	router.POST("/transactions", pay)
+
+	router.GET("/transactions", func(c *gin.Context) {
+		var transactions models.Transactions
+
+		if err := db.All(&transactions); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, transactions)
+	})
+
+	router.GET("/wallets", func(c *gin.Context) {
+		var wallets models.Wallets
+
+		if err := db.All(&wallets); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, wallets)
+	})
 
 	return router
-}
-
-func pay(c *gin.Context) {
-	var transaction models.Transaction
-
-	if err := c.ShouldBindJSON(&transaction); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	if err := db.Save(&transaction); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"status": "Transaction successfully stored"})
 }
