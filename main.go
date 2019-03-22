@@ -14,6 +14,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	defer db.Conn.Close()
+
 	if err := db.Migrate(); err != nil {
 		log.Error(err)
 		os.Exit(1)
@@ -25,8 +27,6 @@ func main() {
 		log.Error(err)
 		os.Exit(1)
 	}
-
-	db.Conn.Close()
 
 	os.Exit(0)
 }
