@@ -11,15 +11,32 @@ Kalicoin (kc) is de voorgestelde in-chat munteenheid. Deze kan verdiend worden, 
 Het hoofddoel is een in-chat economie op te zetten zodat het spammen van bepaalde commando's kan verminderd worden, alsook dat users mekaar kunnen belonen wanneer hulp wordt verstrekt aan elkaar.
 Zogenaamde "IRL" transacties kunnen hiermee ook gemaakt worden, bv het ruilen van een afgesproken aantal kc tegen een 3D geprint object.
 
-## Configuration
+## Developing
+
+Build
+
+```bash
+go build kalicoin
+```
+
+Test
+
+```bash
+$ docker run -e POSTGRES_DB=kalicoin_test -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass -p5432:5432 -it postgres:11
+
+# Other terminal
+$ DATABASE_URI="postgres://user:pass@localhost:5432/kalicoin_test?sslmode=disable" go test -mod vendor ./...
+?       kalicoin                [no test files]
+?       kalicoin/pkg/api        [no test files]
+?       kalicoin/pkg/db         [no test files]
+ok      kalicoin/pkg/models     0.605s
+```
+
+### Configuration
 
 `DATABASE_URI`
 
 This is the URI used for connecting to the database
-
-`KALI_ID`
-
-This is the id of the telegram room containing the kali chat
 
 ## Non Functional Requirements
 
@@ -30,22 +47,112 @@ This is the id of the telegram room containing the kali chat
   - receiver
   - amount
 
-## Voorgestelde nieuwe commando's
+## API
 
-### /wallet
+### /wallets
 
-_Krijg eigen kc balans terug_
+#### GET
 
-`usage: /wallet`
+    Returns an array of wallets
 
-### /pay
+```json
+[
+  {
+    "id": 3,
+    "owner_id": 69,
+    "capital": 40,
+    "created_at": "2019-03-21T18:14:22.915032Z",
+    "updated_at": "2019-03-22T18:40:24.148301Z"
+  },
+  {
+    "id": 4,
+    "owner_id": 420,
+    "capital": 150,
+    "created_at": "2019-03-21T18:14:22.953754Z",
+    "updated_at": "2019-03-22T18:40:24.149513Z"
+  }
+]
+```
 
-_schrijf geld over naar een andere gebruiker in chat_
+### /transactions
 
-`usage: /pay @user amount`
+#### POST Transaction{}
 
-- `@user`: tag van gebruiker
-- `amount`: hoeveelheid uitgedrukt in kc
+    Creates a new transaction and returns the transaction with the resulting status
+
+Request
+
+```bash
+$ curl -X POST \
+  http://localhost:8000/transactions \
+  -H 'Content-Type: application/json' \
+  -H 'Postman-Token: 36cfb90a-8bdf-4cf3-8c60-7c2165babf26' \
+  -H 'cache-control: no-cache' \
+  -d '{
+        "type": "trade",
+        "sender": 69,
+        "receiver": 420,
+        "amount": 10
+    }'
+```
+
+Result:
+
+```json
+{
+  "id": 14,
+  "type": "trade",
+  "status": "succeeded",
+  "sender": 69,
+  "receiver": 420,
+  "amount": 10,
+  "failure_reason": "",
+  "created_at": "2019-03-22T18:40:24.128529274Z",
+  "updated_at": "2019-03-22T18:40:24.150446326Z"
+}
+```
+
+#### GET
+
+    Returns the transactions
+
+```json
+[
+  {
+    "id": 8,
+    "type": "trade",
+    "status": "succeeded",
+    "sender": 69,
+    "receiver": 420,
+    "amount": 10,
+    "failure_reason": "",
+    "created_at": "2019-03-21T13:14:22.933576Z",
+    "updated_at": "2019-03-21T13:14:22.955853Z"
+  },
+  {
+    "id": 9,
+    "type": "trade",
+    "status": "succeeded",
+    "sender": 69,
+    "receiver": 420,
+    "amount": 10,
+    "failure_reason": "",
+    "created_at": "2019-03-21T13:14:29.676697Z",
+    "updated_at": "2019-03-21T13:14:29.694235Z"
+  },
+  {
+    "id": 10,
+    "type": "trade",
+    "status": "failed",
+    "sender": 69,
+    "receiver": 420,
+    "amount": 100,
+    "failure_reason": "Not enough money in your wallet",
+    "created_at": "2019-03-21T13:14:34.568206Z",
+    "updated_at": "2019-03-21T13:14:34.585406Z"
+  }
+]
+```
 
 ### /roulette
 
