@@ -1,7 +1,50 @@
 package models
 
-import "testing"
+import (
+	"kalicoin/pkg/db"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func Test_Wallet(t *testing.T) {
-	t.Fatal("This test needs to be implemented!")
+	var userID = 10
+	var smallPayment = StarterCapital / 10
+	var wallet Wallet
+
+	if err := db.Connect(); err != nil {
+		assert.Fail(t, err.Error())
+	}
+
+	if err := db.Migrate("../../migrations"); err != nil {
+		assert.Fail(t, err.Error())
+	}
+
+	err := db.Conn.Where("owner_id = ?", userID).First(&wallet)
+
+	// Wallet should not yet exist
+	assert.Error(t, err)
+
+	err = wallet.Get(db.Conn, userID)
+
+	// The wallet should be created
+	assert.NoError(t, err)
+
+	// A new wallet should start with the starter capital
+	assert.Equal(t, StarterCapital, wallet.Capital)
+
+	// Taking a small amount of money from the wallet should work
+	err = wallet.take(smallPayment)
+	assert.NoError(t, err)
+	assert.Equal(t, StarterCapital-smallPayment, wallet.Capital)
+
+	// It should not be possible to take more money than what is left
+	err = wallet.take(wallet.Capital + 1)
+	assert.Error(t, err)
+
+	// But it should be possible to empty out your wallet!
+	err = wallet.take(wallet.Capital)
+	assert.NoError(t, err)
+
+	db.Reset("../../migrations")
 }

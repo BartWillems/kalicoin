@@ -1,6 +1,8 @@
 package db
 
 import (
+	"errors"
+
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
@@ -25,8 +27,14 @@ func Connect() error {
 }
 
 // Migrate tries to run the migrations
-func Migrate() error {
-	fileMigrator, err := pop.NewFileMigrator("./migrations", Conn)
+func Migrate(params ...string) error {
+	migrationPath := "./migrations"
+
+	if len(params) > 0 {
+		migrationPath = params[0]
+
+	}
+	fileMigrator, err := pop.NewFileMigrator(migrationPath, Conn)
 
 	if err != nil {
 		return err
@@ -35,4 +43,25 @@ func Migrate() error {
 	fileMigrator.Status()
 
 	return fileMigrator.Up()
+}
+
+// Reset clears the database, don't do this in prod
+func Reset(params ...string) error {
+	if envy.Get("env", "development") == "production" {
+		return errors.New("Database reset is disabled in production")
+	}
+
+	migrationPath := "./migrations"
+
+	if len(params) > 0 {
+		migrationPath = params[0]
+
+	}
+	fileMigrator, err := pop.NewFileMigrator(migrationPath, Conn)
+
+	if err != nil {
+		return err
+	}
+
+	return fileMigrator.Reset()
 }

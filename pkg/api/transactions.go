@@ -20,7 +20,7 @@ func pay(c *gin.Context) {
 		return
 	}
 
-	if err := db.Save(&transaction); err != nil {
+	if err := db.Create(&transaction); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"failure_reason": err.Error()})
 		return
 	}

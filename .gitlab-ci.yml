@@ -4,6 +4,18 @@ stages:
 
 variables:
   CONTAINER_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_PATH}
+  DATABASE_URI: "postgres://user:pass@postgres:5432/kalicoin_test?sslmode=disable"
+  POSTGRES_DB: kalicoin_test
+  POSTGRES_USER: user
+  POSTGRES_PASSWORD: pass
+
+test:
+  stage: build
+  image: golang:1.12
+  services:
+    - postgres:11
+  script:
+    - go test -mod vendor ./...
 
 build:
   stage: build
