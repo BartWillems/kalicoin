@@ -1,3 +1,4 @@
 .env
 main
 kalicoin
+migrations/schema.sql
