@@ -1,5 +1,7 @@
 # KaliCoin specifications
 
+![alt text](kalicoin.png "Kalicoin Logo")
+
 v1.0.1 - 20/03/2019
 
 ## Summary
