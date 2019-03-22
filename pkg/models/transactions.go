@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"reflect"
 	"time"
 
 	"github.com/gobuffalo/pop"
@@ -13,6 +14,24 @@ type TransactionType string
 
 // TransactionStatus indicates the current status of a payment
 type TransactionStatus string
+
+// Cost is the value of a certain bot feature
+type Cost int
+
+// Reward is the value received by participating in certain bot events
+type Reward uint
+
+// PaymentType is an interface used for purchases
+// Every PaymentType should implement Name() to be able to log payment reasons
+type PaymentType interface {
+	Name() string
+}
+
+// Name returns the name of a payment type
+func (r Reward) Name() string {
+	val := reflect.Indirect(reflect.ValueOf(r))
+	return val.Type().Field(0).Name
+}
 
 const (
 	// Trade means giving kalicoins from one chat member to another
@@ -30,10 +49,19 @@ const (
 	// - invalid receiver
 	// - general db errors
 	Failed TransactionStatus = "failed"
-)
 
-// TODO:
-// Add constant payments (/img, /quote, ...) and store them with the transaction
+	// Quote (img, video, audio, text)
+	Quote Cost = 10
+
+	// All tags everyone with a username and could be annoying
+	All Cost = 10
+
+	// Checkin is the biggest money maker as you can't plan participating
+	Checkin Reward = 100
+
+	// Kalivents could be completed twice a day
+	Kalivents Reward = 20
+)
 
 // Transaction is a log of a payment that happened
 type Transaction struct {

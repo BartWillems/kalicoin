@@ -38,10 +38,12 @@ func Test_Transaction(t *testing.T) {
 	err = db.Conn.Create(&transaction)
 	assert.NoError(t, err)
 
+	// The sender should've lost money
 	err = db.Conn.Where("owner_id = ?", sender).First(&senderWallet)
 	assert.NoError(t, err)
 	assert.Equal(t, StarterCapital-amount, senderWallet.Capital)
 
+	// And the receiver should've gained the money
 	err = db.Conn.Where("owner_id = ?", receiver).First(&receiverWallet)
 	assert.NoError(t, err)
 	assert.Equal(t, StarterCapital+amount, receiverWallet.Capital)

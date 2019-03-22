@@ -86,8 +86,6 @@ Request
 $ curl -X POST \
   http://localhost:8000/transactions \
   -H 'Content-Type: application/json' \
-  -H 'Postman-Token: 36cfb90a-8bdf-4cf3-8c60-7c2165babf26' \
-  -H 'cache-control: no-cache' \
   -d '{
         "type": "trade",
         "sender": 69,
