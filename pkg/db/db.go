@@ -1,6 +1,8 @@
 package db
 
 import (
+	"errors"
+
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
@@ -41,4 +43,25 @@ func Migrate(params ...string) error {
 	fileMigrator.Status()
 
 	return fileMigrator.Up()
+}
+
+// Reset the database and bring the migrations up again
+func Reset(path string) error {
+	if envy.Get("env", "development") == "production" {
+		return errors.New("Reset is disabled when running in production")
+	}
+
+	migrator, err := pop.NewFileMigrator(path, Conn)
+
+	if err != nil {
+		return err
+	}
+
+	err = migrator.Down(-1)
+
+	if err != nil {
+		return err
+	}
+
+	return migrator.Up()
 }

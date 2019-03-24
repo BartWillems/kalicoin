@@ -17,7 +17,7 @@ func Test_Transaction(t *testing.T) {
 		assert.Fail(t, err.Error())
 	}
 
-    if err := db.Conn.MigrateReset("../../migrations"); err != nil {
+	if err := db.Reset("../../migrations"); err != nil {
 		assert.Fail(t, err.Error())
 	}
 
@@ -47,6 +47,4 @@ func Test_Transaction(t *testing.T) {
 	err = db.Conn.Where("owner_id = ?", receiver).First(&receiverWallet)
 	assert.NoError(t, err)
 	assert.Equal(t, StarterCapital+amount, receiverWallet.Capital)
-
-	db.Reset("../../migrations")
 }
