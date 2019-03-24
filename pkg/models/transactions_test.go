@@ -17,7 +17,7 @@ func Test_Transaction(t *testing.T) {
 		assert.Fail(t, err.Error())
 	}
 
-	if err := db.Migrate("../../migrations"); err != nil {
+    if err := db.Conn.MigrateReset("../../migrations"); err != nil {
 		assert.Fail(t, err.Error())
 	}
 

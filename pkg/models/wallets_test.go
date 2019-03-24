@@ -16,15 +16,17 @@ func Test_Wallet(t *testing.T) {
 		assert.Fail(t, err.Error())
 	}
 
-	if err := db.Migrate("../../migrations"); err != nil {
+    if err := db.Conn.MigrateReset("../../migrations"); err != nil {
 		assert.Fail(t, err.Error())
 	}
 
+    // Fetch a new user's wallet
 	err := db.Conn.Where("owner_id = ?", userID).First(&wallet)
 
 	// Wallet should not yet exist
 	assert.Error(t, err)
 
+    // Use the wallet API to ensure the user has a wallet
 	err = wallet.Get(db.Conn, userID)
 
 	// The wallet should be created
