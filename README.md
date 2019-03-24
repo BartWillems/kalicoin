@@ -1,8 +1,10 @@
 # KaliCoin specifications
 
+[![pipeline status](https://gitlab.com/bartwillems/kalicoin/badges/master/pipeline.svg)](https://gitlab.com/bartwillems/kalicoin/commits/master)
+
 ![alt text](kalicoin.png "Kalicoin Logo")
 
-v1.0.1 - 20/03/2019
+v1.0.0 - 20/03/2019
 
 ## Summary
 
