@@ -1,8 +1,6 @@
 package db
 
 import (
-	"errors"
-
 	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
@@ -44,4 +42,3 @@ func Migrate(params ...string) error {
 
 	return fileMigrator.Up()
 }
-
