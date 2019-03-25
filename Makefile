@@ -12,23 +12,24 @@ build:
 test:
 	docker run --rm \
 		--name postgres-kalicoin \
-		-e POSTGRES_PASSWORD=pass \
 		-e POSTGRES_USER=user \
 		-e POSTGRES_DB=kalicoin_test \
-		-p 5432:5432 \
-		-d postgres
+		-d postgres:11
 
 	# Waiting for postgres to start up...
-	sleep 5
+	docker run --rm \
+		--link postgres-kalicoin \
+		-t postgres:11 \
+		/bin/bash -c "while ! psql -d kalicoin_test -h postgres-kalicoin -U user -c 'select 1;'; do sleep 1; done"
 
 	docker run --rm \
 		--link postgres-kalicoin \
 		-v "$$PWD":/usr/src/kalicoin \
 		-w /usr/src/kalicoin \
 		-e GO111MODULE=on \
-		-e DATABASE_URI="postgres://user:pass@postgres-kalicoin:5432/kalicoin_test?sslmode=disable" \
+		-e DATABASE_URI="postgres://user:@postgres-kalicoin:5432/kalicoin_test?sslmode=disable" \
 		golang:latest \
-		go test -mod vendor ./...
+		/bin/bash -c "go test -mod vendor ./pkg/api && go test -mod vendor ./pkg/models" 
 
 	docker stop postgres-kalicoin
 

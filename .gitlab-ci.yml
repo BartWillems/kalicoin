@@ -15,7 +15,8 @@ test:
   services:
     - postgres:11
   script:
-    - go test -mod vendor ./...
+    - go test -mod vendor ./pkg/api
+    - go test -mod vendor ./pkg/models
 
 build:
   stage: build

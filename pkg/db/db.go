@@ -51,17 +51,26 @@ func Reset(path string) error {
 		return errors.New("Reset is disabled when running in production")
 	}
 
+	err := clear(path)
+
+	if err != nil {
+		return err
+	}
+
+	return Migrate(path)
+}
+
+// clear wipes the database clean
+func clear(path string) error {
+	if envy.Get("env", "development") == "production" {
+		return errors.New("Reset is disabled when running in production")
+	}
+
 	migrator, err := pop.NewFileMigrator(path, Conn)
 
 	if err != nil {
 		return err
 	}
 
-	err = migrator.Down(-1)
-
-	if err != nil {
-		return err
-	}
-
-	return migrator.Up()
+	return migrator.Down(-1)
 }

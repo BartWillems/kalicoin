@@ -8,11 +8,11 @@ import (
 	"github.com/gobuffalo/pop"
 )
 
-var db *pop.Connection
+var tx *pop.Connection
 
 // New creates a new gin instance without starting it
 func New(conn *pop.Connection) *gin.Engine {
-	db = conn
+	tx = conn
 
 	router := gin.Default()
 
@@ -21,7 +21,7 @@ func New(conn *pop.Connection) *gin.Engine {
 	router.GET("/transactions", func(c *gin.Context) {
 		var transactions models.Transactions
 
-		if err := db.All(&transactions); err != nil {
+		if err := tx.All(&transactions); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -32,7 +32,7 @@ func New(conn *pop.Connection) *gin.Engine {
 	router.GET("/wallets", func(c *gin.Context) {
 		var wallets models.Wallets
 
-		if err := db.All(&wallets); err != nil {
+		if err := tx.All(&wallets); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}

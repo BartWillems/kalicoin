@@ -8,7 +8,7 @@ sql("
         PRIMARY KEY(id)
     );
 
-    CREATE TYPE transaction_type AS ENUM('trade', 'payment');
+    CREATE TYPE transaction_type AS ENUM('trade', 'payment', 'reward');
     CREATE TYPE transaction_status AS ENUM('pending', 'succeeded', 'failed');
     
     CREATE TABLE transactions (

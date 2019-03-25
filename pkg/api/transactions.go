@@ -20,7 +20,7 @@ func pay(c *gin.Context) {
 		return
 	}
 
-	if err := db.Create(&transaction); err != nil {
+	if err := tx.Create(&transaction); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"failure_reason": err.Error()})
 		return
 	}
@@ -28,6 +28,6 @@ func pay(c *gin.Context) {
 	if transaction.Status != models.Succeeded {
 		c.JSON(http.StatusForbidden, transaction)
 	} else {
-		c.JSON(http.StatusOK, transaction)
+		c.JSON(http.StatusCreated, transaction)
 	}
 }
