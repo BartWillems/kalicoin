@@ -14,6 +14,12 @@ type RewardTransaction struct {
 
 // Create maps a reward to a real transaction and creates it
 func (r *RewardTransaction) Create(tx *pop.Connection) (*Transaction, error) {
+	var wallet Wallet
+
+	if err := wallet.Get(tx, nulls.NewInt(r.Receiver)); err != nil {
+		return nil, err
+	}
+
 	transaction := Transaction{
 		Receiver: nulls.NewInt(r.Receiver),
 		Cause:    r.Cause,
