@@ -15,13 +15,13 @@ type TradeTransaction struct {
 
 // Create maps a trade to a real transaction and creates it
 func (t *TradeTransaction) Create(tx *pop.Connection) (*Transaction, error) {
-	var wallet Wallet
+	var senderWallet, receiverWallet Wallet
 
-	if err := wallet.Get(tx, nulls.NewInt(t.Sender)); err != nil {
+	if err := senderWallet.Get(tx, nulls.NewInt(t.Sender)); err != nil {
 		return nil, err
 	}
 
-	if err := wallet.Get(tx, nulls.NewInt(t.Receiver)); err != nil {
+	if err := receiverWallet.Get(tx, nulls.NewInt(t.Receiver)); err != nil {
 		return nil, err
 	}
 

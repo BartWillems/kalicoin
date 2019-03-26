@@ -45,7 +45,7 @@ func trade(c *gin.Context) {
 	transaction, err := trade.Create(tx)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"failure_reason": err.Error()})
+		c.JSON(http.StatusForbidden, gin.H{"failure_reason": err.Error()})
 		return
 	}
 

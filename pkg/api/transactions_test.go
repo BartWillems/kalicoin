@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"kalicoin/pkg/db"
 	"kalicoin/pkg/models"
 	"net/http"
@@ -48,8 +49,14 @@ func Test_Payments(t *testing.T) {
 		Amount:   transactionAmount,
 	}
 
-	tradeJSON, _ := json.Marshal(trade)
-	req, _ = http.NewRequest("POST", "/trades", bytes.NewBuffer(tradeJSON))
+	tradeJSON, err := json.Marshal(trade)
+
+	assert.NoError(t, err)
+
+	req, err = http.NewRequest("POST", "/trades", bytes.NewBuffer(tradeJSON))
+
+	assert.NoError(t, err)
+
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
@@ -74,7 +81,7 @@ func Test_Payments(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 
 	var receivedWallets models.Wallets
-	err := json.Unmarshal(w.Body.Bytes(), &receivedWallets)
+	err = json.Unmarshal(w.Body.Bytes(), &receivedWallets)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(receivedWallets))
@@ -82,8 +89,8 @@ func Test_Payments(t *testing.T) {
 	if len(receivedWallets) != 2 {
 		assert.FailNow(
 			t,
-			"Unable to continue the tests as an invalid wallets response has been given (%v wallets received, 2 expected)",
-			len(receivedWallets))
+			fmt.Sprintf("Unable to continue the tests as an invalid wallets response has been given (%v wallets received, 2 expected)", len(receivedWallets)),
+		)
 	}
 
 	// Order the received wallets for easier testing
