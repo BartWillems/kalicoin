@@ -42,15 +42,14 @@ func Test_Payments(t *testing.T) {
 	// Creating transactions
 	w = httptest.NewRecorder()
 
-	transaction := models.Transaction{
+	trade := models.TradeTransaction{
 		Sender:   senderID,
 		Receiver: receiverID,
 		Amount:   transactionAmount,
-		Type:     models.Trade,
 	}
 
-	transactionJSON, _ := json.Marshal(transaction)
-	req, _ = http.NewRequest("POST", "/transactions", bytes.NewBuffer(transactionJSON))
+	tradeJSON, _ := json.Marshal(trade)
+	req, _ = http.NewRequest("POST", "/trades", bytes.NewBuffer(tradeJSON))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)

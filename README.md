@@ -4,7 +4,7 @@
 
 ![alt text](kalicoin.png "Kalicoin Logo")
 
-v1.0.0 - 20/03/2019
+Current status: pre-alpha
 
 ## Summary
 
@@ -24,14 +24,13 @@ go build kalicoin
 Test
 
 ```bash
-$ docker run -e POSTGRES_DB=kalicoin_test -e POSTGRES_USER=user -e POSTGRES_PASSWORD=pass -p5432:5432 -it postgres:11
+$ make test
 
-# Other terminal
-$ DATABASE_URI="postgres://user:pass@localhost:5432/kalicoin_test?sslmode=disable" go test -mod vendor ./...
-?       kalicoin                [no test files]
-?       kalicoin/pkg/api        [no test files]
-?       kalicoin/pkg/db         [no test files]
-ok      kalicoin/pkg/models     0.605s
+/bin/bash -c "go test -mod vendor ./pkg/api && go test -mod vendor ./pkg/models"
+ok      kalicoin/pkg/api        0.082s
+ok      kalicoin/pkg/models     0.188s
+docker stop postgres-kalicoin
+postgres-kalicoin
 ```
 
 ### Configuration
@@ -158,7 +157,7 @@ Result:
 
 _slotmachine-style gokken met kc, beslist door RNG.
 Zou zich kunnen gedragen zoals de slots in pokemon waar hogere inzet hogere win multipliers kan opleveren.
-Zie: https://bulbapedia.bulbagarden.net/wiki/Slot_machine#Payouts_
+Zie: <https://bulbapedia.bulbagarden.net/wiki/Slot_machine#Payouts>_
 
 `usage: /roulette amount`
 

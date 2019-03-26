@@ -4,6 +4,7 @@ import (
 	"kalicoin/pkg/db"
 	"testing"
 
+	"github.com/gobuffalo/nulls"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,7 +28,7 @@ func Test_Wallet(t *testing.T) {
 	assert.Error(t, err)
 
 	// Use the wallet API to ensure the user has a wallet
-	err = wallet.Get(db.Conn, userID)
+	err = wallet.Get(db.Conn, nulls.NewInt(userID))
 
 	// The wallet should be created
 	assert.NoError(t, err)

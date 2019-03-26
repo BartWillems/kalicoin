@@ -13,7 +13,7 @@ test:
   stage: build
   image: golang:1.12
   services:
-    - postgres:11
+    - postgres:9.2
   script:
     - go test -mod vendor ./pkg/api
     - go test -mod vendor ./pkg/models

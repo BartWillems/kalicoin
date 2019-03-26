@@ -7,20 +7,66 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func pay(c *gin.Context) {
-	var transaction models.Transaction
+func payment(c *gin.Context) {
+	var payment models.PaymentTransaction
 
-	if err := c.ShouldBindJSON(&transaction); err != nil {
+	if err := c.ShouldBindJSON(&payment); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"failure_reason": err.Error()})
 		return
 	}
 
-	if transaction.Sender == transaction.Receiver {
+	transaction, err := payment.Create(tx)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"failure_reason": err.Error()})
+		return
+	}
+
+	if transaction.Status != models.Succeeded {
+		c.JSON(http.StatusForbidden, transaction)
+	} else {
+		c.JSON(http.StatusCreated, transaction)
+	}
+}
+
+func trade(c *gin.Context) {
+	var trade models.TradeTransaction
+
+	if err := c.ShouldBindJSON(&trade); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"failure_reason": err.Error()})
+		return
+	}
+
+	if trade.Sender == trade.Receiver {
 		c.JSON(http.StatusBadRequest, gin.H{"failure_reason": "You can not send money to yourself"})
 		return
 	}
 
-	if err := tx.Create(&transaction); err != nil {
+	transaction, err := trade.Create(tx)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"failure_reason": err.Error()})
+		return
+	}
+
+	if transaction.Status != models.Succeeded {
+		c.JSON(http.StatusForbidden, transaction)
+	} else {
+		c.JSON(http.StatusCreated, transaction)
+	}
+}
+
+func reward(c *gin.Context) {
+	var reward models.RewardTransaction
+
+	if err := c.ShouldBindJSON(&reward); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"failure_reason": err.Error()})
+		return
+	}
+
+	transaction, err := reward.Create(tx)
+
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"failure_reason": err.Error()})
 		return
 	}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/gobuffalo/nulls"
 	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
 )
@@ -32,7 +33,10 @@ func (w *Wallet) create(tx *pop.Connection, UserID int) error {
 }
 
 // Get fetches the user's wallet and creates it if it doesn't exist
-func (w *Wallet) Get(tx *pop.Connection, UserID int) error {
+func (w *Wallet) Get(tx *pop.Connection, UserID nulls.Int) error {
+	if !UserID.Valid {
+		return errors.New("Empty UserID provided")
+	}
 	err := tx.Where("owner_id = ?", UserID).First(w)
 
 	if err == nil {
@@ -40,7 +44,7 @@ func (w *Wallet) Get(tx *pop.Connection, UserID int) error {
 	}
 
 	log.Infof("Attempting to create the wallet for user %v with capital %v", UserID, StarterCapital)
-	return w.create(tx, UserID)
+	return w.create(tx, UserID.Int)
 }
 
 func (w *Wallet) take(amount uint32) error {
