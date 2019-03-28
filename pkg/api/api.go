@@ -1,11 +1,14 @@
 package api
 
 import (
+	"kalicoin/pkg/api/middlewares"
+	"kalicoin/pkg/jaeger"
 	"kalicoin/pkg/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/pop"
+	log "github.com/sirupsen/logrus"
 )
 
 var tx *pop.Connection
@@ -15,6 +18,12 @@ func New(conn *pop.Connection) *gin.Engine {
 	tx = conn
 
 	router := gin.Default()
+
+	if jaeger.Tracer != nil {
+		router.Use(middlewares.Jaeger(jaeger.Tracer))
+	} else {
+		log.Info("Not using the Jaeger middleware as jaeger isn't initialized")
+	}
 
 	router.POST("/payments", payment)
 	router.POST("/trades", trade)

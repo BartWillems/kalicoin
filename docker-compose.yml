@@ -9,12 +9,16 @@ services:
     working_dir: /go/src/kalicoin
     command: go run kalicoin
     environment:
-      DATABASE_URI: "postgres://user:pass@postgres:5432/kalicoin?sslmode=disable"
       ENVIRONMENT: "development"
+      DATABASE_URI: "postgres://user:pass@postgres:5432/kalicoin?sslmode=disable"
+      JAEGER_AGENT_HOST: "jaeger"
+      JAEGER_AGENT_PORT: "6831"
+      JAEGER_SERVICE_NAME: "kalicoin"
     ports:
       - 8000:8000
     depends_on:
       - postgres
+      - jaeger
 
   postgres:
     image: postgres:9.2
@@ -34,3 +38,10 @@ services:
       - postgres
     ports:
       - 8080:80
+  jaeger:
+    image: jaegertracing/all-in-one:1.11
+    environment:
+      COLLECTOR_ZIPKIN_HTTP_PORT: "9411"
+    ports:
+      - 6831:6831/udp
+      - 16686:16686
