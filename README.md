@@ -8,10 +8,10 @@ Current status: pre-alpha
 
 ## Summary
 
-Kalicoin (kc) is de voorgestelde in-chat munteenheid. Deze kan verdiend worden, uitgegeven, en geruild worden.
+Kalicoin (kc) is the proposed in-chat currency. This can be earned, spent, and exchanged.
 
-Het hoofddoel is een in-chat economie op te zetten zodat het spammen van bepaalde commando's kan verminderd worden, alsook dat users mekaar kunnen belonen wanneer hulp wordt verstrekt aan elkaar.
-Zogenaamde "IRL" transacties kunnen hiermee ook gemaakt worden, bv het ruilen van een afgesproken aantal kc tegen een 3D geprint object.
+The main objective is to set up an in-chat economy so that the spamming of certain commands can be reduced, and that users can reward each other when assistance is provided to each other.
+So-called "IRL" transactions can also be made with this, for example exchanging an agreed number of kc for a 3D printed object.
 
 ## Developing
 
@@ -41,12 +41,12 @@ This is the URI used for connecting to the database
 
 ## Non Functional Requirements
 
-- Iedereen's wallet (hoeveelheid kc in bezit) moet opgeslagen worden als een record in een tabel
-- Alle transacties moeten gelogged worden
-  - datum transactie
-  - sender
-  - receiver
-  - amount
+- Everyone's wallet (amount of kc in possession) must be stored as a record in a table
+- All transactions must be logged
+   - transaction date
+   - sender
+   - receiver
+   - amount
 
 ## API
 
@@ -155,37 +155,37 @@ Result:
 
 ### /roulette
 
-_slotmachine-style gokken met kc, beslist door RNG.
-Zou zich kunnen gedragen zoals de slots in pokemon waar hogere inzet hogere win multipliers kan opleveren.
-Zie: <https://bulbapedia.bulbagarden.net/wiki/Slot_machine#Payouts>_
+_Slot machine-style gambling with kc, decided by RNG.
+Could behave like the slots in pokemon where higher bets can produce higher win multipliers.
+See: <https://bulbapedia.bulbagarden.net/wiki/Slot_machine#Payouts>_
 
-`usage: /roulette amount`
+`usage: / roulette amount`
 
-- `amount`: hoeveelheid uitgedrukt in kc
+- `amount`: quantity expressed in kc
 
-## Voorgestelde premium commando's
+## Proposed Premium Commands
 
-_Coins moeten zowel kunnen verdiend als uitgegeven worden om inflatie of devaluatie binnen de perken te houden_
+_Coins must be able to both be earned and spent to keep inflation or devaluation under control_
 
 ### /{img,vod,audio}quote
 
-- Nieuwe quotes maken zou geld kunnen kosten, bv 10kc.
-- Quotes opvragen blijft gratis, tenzij `/presidential_quote` kan ook geld kosten.
+- Creating new quotes could cost money, for example 10kc.
+- Quotes retrieval remains free, unless `/ presidential_quote` can also cost money.
 
-## Coins verdienen
+## Earning coins
 
 ### Check-in
 
-_Users die op de dagelijkse check-in reageren kunnen beloond worden met een mooi bedrag kc. bv 1000 kc.
-420 and 1337 zouden kunnen terug gebracht worden zonder leaderbord, als extra check-in momenten. Deze zouden wel minder kc opleveren dan de random. (50kc bv.)_
+_Users who respond to the daily check-in can be rewarded with a nice amount of kc. e.g. 1000 kc.
+420 and 1337 could be returned without a leader board, as extra check-in moments. These would yield less kc than the random. (50kc e.g.)_
 
-## Coins uitgeven
+## Spending Coins
 
-Meerdere manieren om coins te spenderen (in de vorm van premium commando's) zouden moeten worden bedacht, om devaluatie tegen te gaan.
+Multiple ways to spend coins (in the form of premium commands) should be thought of, to prevent devaluation.
 
-_In de toekomst zou bv doomba remote controle via telegram commando's via kalicoins kunnen werken_
+_ In the future, for example, doomba remote control via telegram commands could work with kalicoins_
 
-## Voorgestelde prijzen
+## Proposed initial prices
 
 - random check-in: +100kc
 - 420/1337: +20kc
@@ -194,6 +194,6 @@ _In de toekomst zou bv doomba remote controle via telegram commando's via kalico
 - /presidential_quote: -5kc
 - /img\*: -5kc
 
-## Startersbudget
+## Starting Budget
 
-_Iedereen zou kunnen beginnen met 100kc, zodat we niet meteen zonder vallen, maar het toch interessant is om er meteen te beginnen verdienen._
+_Anyone could start with 100kc, so that we do not immediately fall without it, but it is still interesting to start earning immediately._
