@@ -25,12 +25,7 @@ func payment(c *gin.Context) {
 		return
 	}
 
-	if transaction.Status != models.Succeeded {
-		c.JSON(http.StatusForbidden, transaction)
-		c.Error(errors.New(transaction.FailureReason.String))
-	} else {
-		c.JSON(http.StatusCreated, transaction)
-	}
+	c.Set("transaction", transaction)
 }
 
 func trade(c *gin.Context) {
@@ -56,12 +51,7 @@ func trade(c *gin.Context) {
 		return
 	}
 
-	if transaction.Status != models.Succeeded {
-		c.JSON(http.StatusForbidden, transaction)
-		c.Error(errors.New(transaction.FailureReason.String))
-	} else {
-		c.JSON(http.StatusCreated, transaction)
-	}
+	c.Set("transaction", transaction)
 }
 
 func reward(c *gin.Context) {
@@ -81,10 +71,5 @@ func reward(c *gin.Context) {
 		return
 	}
 
-	if transaction.Status != models.Succeeded {
-		c.Error(errors.New(transaction.FailureReason.String))
-		c.JSON(http.StatusForbidden, transaction)
-	} else {
-		c.JSON(http.StatusCreated, transaction)
-	}
+	c.Set("transaction", transaction)
 }

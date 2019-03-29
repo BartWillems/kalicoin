@@ -19,6 +19,8 @@ func New(conn *pop.Connection) *gin.Engine {
 
 	router := gin.Default()
 
+	router.Use(middlewares.TransactionVerification())
+
 	if jaeger.Tracer != nil {
 		router.Use(middlewares.Jaeger(jaeger.Tracer))
 	} else {
