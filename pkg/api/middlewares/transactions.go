@@ -2,8 +2,9 @@ package middlewares
 
 import (
 	"errors"
-	"kalicoin/pkg/models"
 	"net/http"
+
+	"gitlab.com/bartwillems/kalicoin/pkg/models"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"

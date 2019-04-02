@@ -1,10 +1,11 @@
 package main
 
 import (
-	"kalicoin/pkg/api"
-	"kalicoin/pkg/db"
-	"kalicoin/pkg/jaeger"
 	"os"
+
+	"gitlab.com/bartwillems/kalicoin/pkg/api"
+	"gitlab.com/bartwillems/kalicoin/pkg/db"
+	"gitlab.com/bartwillems/kalicoin/pkg/jaeger"
 
 	log "github.com/sirupsen/logrus"
 )

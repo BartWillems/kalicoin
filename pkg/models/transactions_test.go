@@ -1,8 +1,9 @@
 package models
 
 import (
-	"kalicoin/pkg/db"
 	"testing"
+
+	"gitlab.com/bartwillems/kalicoin/pkg/db"
 
 	"github.com/gobuffalo/nulls"
 	"github.com/stretchr/testify/assert"

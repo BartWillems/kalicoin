@@ -4,11 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"kalicoin/pkg/db"
-	"kalicoin/pkg/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"gitlab.com/bartwillems/kalicoin/pkg/db"
+	"gitlab.com/bartwillems/kalicoin/pkg/models"
 
 	"github.com/gobuffalo/envy"
 	"github.com/stretchr/testify/assert"

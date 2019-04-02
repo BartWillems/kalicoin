@@ -1,10 +1,11 @@
 package api
 
 import (
-	"kalicoin/pkg/api/middlewares"
-	"kalicoin/pkg/jaeger"
-	"kalicoin/pkg/models"
 	"net/http"
+
+	"gitlab.com/bartwillems/kalicoin/pkg/api/middlewares"
+	"gitlab.com/bartwillems/kalicoin/pkg/jaeger"
+	"gitlab.com/bartwillems/kalicoin/pkg/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/envy"

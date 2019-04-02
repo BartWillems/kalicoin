@@ -2,8 +2,9 @@ package api
 
 import (
 	"errors"
-	"kalicoin/pkg/models"
 	"net/http"
+
+	"gitlab.com/bartwillems/kalicoin/pkg/models"
 
 	"github.com/gin-gonic/gin"
 )
