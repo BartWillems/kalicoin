@@ -10,6 +10,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gobuffalo/envy"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,6 +32,20 @@ func Test_Payments(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/wallets", nil)
+	router.ServeHTTP(w, req)
+
+	// Without basic auth this should fail
+	assert.Equal(t, 401, w.Code)
+
+	// Prepare basic auth
+	var username = "octaaf"
+	var password = "secret"
+	envy.Set("AUTH_USERNAME", username)
+	envy.Set("AUTH_PASSWORD", password)
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest("GET", "/wallets", nil)
+	req.SetBasicAuth(username, password)
 	router.ServeHTTP(w, req)
 
 	// List wallets, should be empty atm
@@ -57,6 +72,8 @@ func Test_Payments(t *testing.T) {
 
 	assert.NoError(t, err)
 
+	req.SetBasicAuth(username, password)
+
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
@@ -76,6 +93,9 @@ func Test_Payments(t *testing.T) {
 	}
 	walletsJSON, _ = json.Marshal(wallets)
 	req, _ = http.NewRequest("GET", "/wallets", nil)
+
+	req.SetBasicAuth(username, password)
+
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)

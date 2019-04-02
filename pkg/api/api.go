@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
 )
@@ -19,6 +20,12 @@ func New(conn *pop.Connection) *gin.Engine {
 
 	router := gin.Default()
 
+	// Basic Auth middleware
+	router.Use(gin.BasicAuth(gin.Accounts{
+		envy.Get("AUTH_USERNAME", "octaaf"): envy.Get("AUTH_PASSWORD", "secret"),
+	}))
+
+	// Transaction middleware, this does error responding of failed transactions
 	router.Use(middlewares.TransactionVerification())
 
 	if jaeger.Tracer != nil {

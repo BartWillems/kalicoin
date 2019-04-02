@@ -35,18 +35,25 @@ postgres-kalicoin
 
 ### Configuration
 
-`DATABASE_URI`
-
-This is the URI used for connecting to the database
+| ENV               | Description                             | Example                                                        |
+| ----------------- | --------------------------------------- | -------------------------------------------------------------- |
+| DATABASE_URI      | URI Used for connecting to the database | `postgres://user:pass@127.0.0.1:5432/kalicoin?sslmode=disable` |
+| JAEGER_AGENT_HOST | Jaeger host for tracing purposes        | `jaeger`                                                       |
+| JAEGER_AGENT_PORT | UDP Port to send the traces to          | `6831`                                                         |
+| AUTH_USERNAME     | Basic Auth username for API access      | `octaaf`                                                       |
+| AUTH_PASSWORD     | Basic Auth password for API access      | `secret`                                                       |
 
 ## Non Functional Requirements
 
 - Everyone's wallet (amount of kc in possession) must be stored as a record in a table
 - All transactions must be logged
-   - transaction date
-   - sender
-   - receiver
-   - amount
+  - transaction date
+  - update date (is set when succeeded/failed)
+  - sender
+  - receiver
+  - amount
+  - type
+  - failure reason (if present)
 
 ## API
 
