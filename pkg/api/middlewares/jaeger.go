@@ -6,13 +6,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 )
 
 // Jaeger returns a middleware for the Gin http server
 // This middleware creates spans for requests and reports context errors
 func Jaeger(tracer opentracing.Tracer) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		span := tracer.StartSpan(c.Request.Method + ":" + c.Request.URL.Path)
+
+		carrier := opentracing.HTTPHeadersCarrier(c.Request.Header)
+		ctx, err := tracer.Extract(opentracing.HTTPHeaders, carrier)
+
+		var span opentracing.Span
+		if err != nil {
+			span = tracer.StartSpan(c.Request.Method + ":" + c.Request.URL.Path)
+		} else {
+			span = tracer.StartSpan(c.Request.Method+":"+c.Request.URL.Path, ext.RPCServerOption(ctx))
+		}
+
 		defer span.Finish()
 
 		span.SetTag("method", c.Request.Method)
