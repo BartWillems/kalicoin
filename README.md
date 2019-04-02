@@ -82,23 +82,23 @@ postgres-kalicoin
 ]
 ```
 
-### /transactions
+### /{trades, rewards, payments}
 
 #### POST Transaction{}
 
     Creates a new transaction and returns the transaction with the resulting status
 
-Request
+Trades Request
 
 ```bash
 $ curl -X POST \
-  http://localhost:8000/transactions \
+  http://localhost:8000/trades \
+  -H 'Authorization: Basic b2N0YWFmOnNlY3JldA==' \
   -H 'Content-Type: application/json' \
   -d '{
-        "type": "trade",
         "sender": 69,
         "receiver": 420,
-        "amount": 10
+        "amount": 1000
     }'
 ```
 
@@ -106,13 +106,74 @@ Result:
 
 ```json
 {
-  "id": 14,
+  "id": 2,
   "type": "trade",
+  "status": "failed",
+  "sender": 10,
+  "receiver": 69,
+  "amount": 1000,
+  "cause": null,
+  "failure_reason": "Not enough money in your wallet",
+  "created_at": "2019-03-22T18:40:24.128529274Z",
+  "updated_at": "2019-03-22T18:40:24.150446326Z"
+}
+```
+
+Reward Request
+
+```bash
+$ curl -X POST \
+  http://localhost:8000/rewards \
+  -H 'Authorization: Basic b2N0YWFmOnNlY3JldA==' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "receiver": 420,
+        "cause": "kalivent"
+    }'
+```
+
+Result:
+
+```json
+{
+  "id": 1,
+  "type": "reward",
+  "status": "succeeded",
+  "sender": null,
+  "receiver": 20,
+  "amount": 20,
+  "cause": "kalivent",
+  "failure_reason": null,
+  "created_at": "2019-03-22T18:40:24.128529274Z",
+  "updated_at": "2019-03-22T18:40:24.150446326Z"
+}
+```
+
+Payment Request
+
+```bash
+$ curl -X POST \
+  http://localhost:8000/payments \
+  -H 'Authorization: Basic b2N0YWFmOnNlY3JldA==' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "sender": 69,
+    "cause": "quote"
+  }'
+```
+
+Result:
+
+```json
+{
+  "id": 3,
+  "type": "payment",
   "status": "succeeded",
   "sender": 69,
-  "receiver": 420,
+  "receiver": null,
   "amount": 10,
-  "failure_reason": "",
+  "cause": "quote",
+  "failure_reason": null,
   "created_at": "2019-03-22T18:40:24.128529274Z",
   "updated_at": "2019-03-22T18:40:24.150446326Z"
 }
