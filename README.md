@@ -179,7 +179,7 @@ Result:
 }
 ```
 
-#### GET
+#### GET /transactions
 
     Returns the transactions
 
@@ -233,7 +233,7 @@ See: <https://bulbapedia.bulbagarden.net/wiki/Slot_machine#Payouts>_
 
 ## Proposed Premium Commands
 
-_Coins must be able to both be earned and spent to keep inflation or devaluation under control_
+Coins must be able to both be earned and spent to keep inflation or devaluation under control
 
 ### /{img,vod,audio}quote
 
