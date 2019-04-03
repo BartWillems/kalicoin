@@ -35,13 +35,14 @@ postgres-kalicoin
 
 ### Configuration
 
-| ENV               | Description                             | Example                                                        |
-| ----------------- | --------------------------------------- | -------------------------------------------------------------- |
-| DATABASE_URI      | URI Used for connecting to the database | `postgres://user:pass@127.0.0.1:5432/kalicoin?sslmode=disable` |
-| JAEGER_AGENT_HOST | Jaeger host for tracing purposes        | `jaeger`                                                       |
-| JAEGER_AGENT_PORT | UDP Port to send the traces to          | `6831`                                                         |
-| AUTH_USERNAME     | Basic Auth username for API access      | `octaaf`                                                       |
-| AUTH_PASSWORD     | Basic Auth password for API access      | `secret`                                                       |
+| ENV                 | Description                               | Example                                                        |
+| ------------------- | ----------------------------------------- | -------------------------------------------------------------- |
+| DATABASE_URI        | URI Used for connecting to the database   | `postgres://user:pass@127.0.0.1:5432/kalicoin?sslmode=disable` |
+| JAEGER_AGENT_HOST   | Jaeger host for tracing purposes          | `jaeger`                                                       |
+| JAEGER_AGENT_PORT   | UDP Port to send the traces to            | `6831`                                                         |
+| JAEGER_SERVICE_NAME | Service name that will be shown on jaeger | `kalicoin`                                                     |
+| AUTH_USERNAME       | Basic Auth username for API access        | `octaaf`                                                       |
+| AUTH_PASSWORD       | Basic Auth password for API access        | `secret`                                                       |
 
 ## Non Functional Requirements
 
