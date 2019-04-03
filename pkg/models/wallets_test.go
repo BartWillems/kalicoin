@@ -10,6 +10,7 @@ import (
 )
 
 func Test_Wallet(t *testing.T) {
+	var groupID int64 = 1
 	var userID = 10
 	var smallPayment = StarterCapital / 10
 	var wallet Wallet
@@ -29,7 +30,7 @@ func Test_Wallet(t *testing.T) {
 	assert.Error(t, err)
 
 	// Use the wallet API to ensure the user has a wallet
-	err = wallet.Get(db.Conn, nulls.NewInt(userID))
+	err = wallet.Get(db.Conn, groupID, nulls.NewInt(userID))
 
 	// The wallet should be created
 	assert.NoError(t, err)

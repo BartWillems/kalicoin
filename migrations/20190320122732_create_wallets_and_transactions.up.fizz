@@ -1,11 +1,12 @@
 sql("
 	CREATE TABLE wallets (
-        id BIGSERIAL NOT NULL,
-        owner_id int UNIQUE NOT NULL,
+        id BIGSERIAL PRIMARY KEY,
+        owner_id int NOT NULL,
+        group_id bigint NOT NULL,
         capital numeric NOT NULL CHECK (capital >= 0),
         created_at timestamp NOT NULL,
         updated_at timestamp NOT NULL,
-        PRIMARY KEY(id)
+        UNIQUE(owner_id, group_id)
     );
 
     CREATE TYPE transaction_type AS ENUM('trade', 'payment', 'reward');
@@ -15,13 +16,17 @@ sql("
         id BIGSERIAL NOT NULL,
         type transaction_type NOT NULL,
         status transaction_status DEFAULT('pending'),
-        sender int REFERENCES wallets(owner_id),
-        receiver int REFERENCES wallets(owner_id),
+        sender int,
+        receiver int,
+        group_id int NOT NULL,
         amount numeric NOT NULL CHECK (amount >= 0),
         cause text,
         failure_reason text,
         created_at timestamp NOT NULL,
         updated_at timestamp NOT NULL,
+
+        FOREIGN KEY (group_id, sender) REFERENCES wallets (group_id, owner_id),
+        FOREIGN KEY (group_id, receiver) REFERENCES wallets (group_id, owner_id),
         PRIMARY KEY(id)
     );
 ")

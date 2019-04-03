@@ -39,6 +39,7 @@ type Transaction struct {
 	ID            int64             `json:"id" db:"id"`
 	Type          TransactionType   `json:"type" db:"type" binding:"required"`
 	Status        TransactionStatus `json:"status" db:"status"`
+	GroupID       int64             `json:"group_id" db:"group_id"`
 	Sender        nulls.Int         `json:"sender" db:"sender" binding:"required"`
 	Receiver      nulls.Int         `json:"receiver" db:"receiver"`
 	Amount        uint32            `json:"amount" db:"amount" binding:"required"`
@@ -174,7 +175,7 @@ func (t *Transaction) trade(tx *pop.Connection) error {
 func (t *Transaction) pay(tx *pop.Connection) error {
 	var wallet Wallet
 
-	if err := wallet.Get(tx, t.Sender); err != nil {
+	if err := wallet.Get(tx, t.GroupID, t.Sender); err != nil {
 		return err
 	}
 
@@ -193,7 +194,7 @@ func (t *Transaction) pay(tx *pop.Connection) error {
 func (t *Transaction) receive(tx *pop.Connection) error {
 	var wallet Wallet
 
-	if err := wallet.Get(tx, t.Receiver); err != nil {
+	if err := wallet.Get(tx, t.GroupID, t.Receiver); err != nil {
 		return err
 	}
 

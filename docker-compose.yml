@@ -5,10 +5,11 @@ services:
   kalicoin:
     image: golang:1.12
     volumes:
-      - .:/go/src/kalicoin
-    working_dir: /go/src/kalicoin
-    command: go run kalicoin
+      - .:/app/kalicoin
+    working_dir: /app/kalicoin
+    command: bash -c "go build -mod vendor && ./kalicoin"
     environment:
+      GO111MODULE: "on"
       ENVIRONMENT: "development"
       DATABASE_URI: "postgres://user:pass@postgres:5432/kalicoin?sslmode=disable"
       JAEGER_AGENT_HOST: "jaeger"

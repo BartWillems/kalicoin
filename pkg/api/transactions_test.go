@@ -16,6 +16,7 @@ import (
 )
 
 const transactionAmount = 10
+const groupID = 1
 const senderID = 1
 const receiverID = 2
 
@@ -60,6 +61,7 @@ func Test_Payments(t *testing.T) {
 	w = httptest.NewRecorder()
 
 	trade := models.TradeTransaction{
+		GroupID:  groupID,
 		Sender:   senderID,
 		Receiver: receiverID,
 		Amount:   transactionAmount,
@@ -84,10 +86,12 @@ func Test_Payments(t *testing.T) {
 
 	wallets = models.Wallets{
 		models.Wallet{
+			GroupID: groupID,
 			OwnerID: senderID,
 			Capital: models.StarterCapital - transactionAmount,
 		},
 		models.Wallet{
+			GroupID: groupID,
 			OwnerID: receiverID,
 			Capital: models.StarterCapital + transactionAmount,
 		},

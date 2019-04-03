@@ -10,6 +10,7 @@ import (
 )
 
 func Test_Transaction(t *testing.T) {
+	var groupID int64 = 1
 	var sender = nulls.NewInt(1)
 	var receiver = nulls.NewInt(2)
 	var amount uint32 = 10
@@ -30,6 +31,7 @@ func Test_Transaction(t *testing.T) {
 	assert.Error(t, err)
 
 	trade := TradeTransaction{
+		GroupID:  groupID,
 		Sender:   sender.Int,
 		Receiver: receiver.Int,
 		Amount:   amount,
@@ -44,17 +46,18 @@ func Test_Transaction(t *testing.T) {
 	assert.Equal(t, Trade, transaction.Type)
 
 	// The sender should've lost money
-	err = senderWallet.Get(db.Conn, sender)
+	err = senderWallet.Get(db.Conn, groupID, sender)
 	assert.NoError(t, err)
 	assert.Equal(t, StarterCapital-amount, senderWallet.Capital)
 
 	// And the receiver should've gained the money
-	err = receiverWallet.Get(db.Conn, receiver)
+	err = receiverWallet.Get(db.Conn, groupID, receiver)
 	assert.NoError(t, err)
 	assert.Equal(t, StarterCapital+amount, receiverWallet.Capital)
 
 	// Test rewards
 	reward := RewardTransaction{
+		GroupID:  groupID,
 		Receiver: receiver.Int,
 		Cause:    nulls.NewString("checkin"),
 	}
@@ -68,7 +71,7 @@ func Test_Transaction(t *testing.T) {
 	assert.Equal(t, Succeeded, rewardTransaction.Status)
 	assert.Equal(t, Reward, rewardTransaction.Type)
 
-	err = receiverWallet.Get(db.Conn, receiver)
+	err = receiverWallet.Get(db.Conn, groupID, receiver)
 	assert.NoError(t, err)
 	assert.Equal(t, capital+PriceTable[Reward][nulls.NewString("checkin")], receiverWallet.Capital)
 }
