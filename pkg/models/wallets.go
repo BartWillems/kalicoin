@@ -12,8 +12,8 @@ import (
 // Wallet is a chat member's wallet 🤔
 type Wallet struct {
 	ID        int64     `json:"id" db:"id"`
-	OwnerID   int       `json:"owner_id" db:"owner_id"`
-	GroupID   int64     `json:"group_id" db:"group_id"`
+	OwnerID   int       `json:"owner_id" db:"owner_id" uri:"owner_id" binding:"required"`
+	GroupID   int64     `json:"group_id" db:"group_id" uri:"group_id" binding:"required"`
 	Capital   uint32    `json:"capital" db:"capital"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`

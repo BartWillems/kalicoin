@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"gitlab.com/bartwillems/kalicoin/pkg/api/middlewares"
 	"gitlab.com/bartwillems/kalicoin/pkg/jaeger"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gobuffalo/envy"
+	"github.com/gobuffalo/nulls"
 	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
 )
@@ -92,6 +94,33 @@ func New(conn *pop.Connection) *gin.Engine {
 		}
 
 		c.JSON(http.StatusOK, wallets)
+	})
+
+	router.GET("/wallets/group/:group_id/owner/:owner_id", func(c *gin.Context) {
+		var wallet models.Wallet
+
+		// TODO: use ShouldBindUri to map on wallet directly
+		// https://gin-gonic.com/docs/examples/bind-uri/
+		groupID, err := strconv.ParseInt(c.Param("group_id"), 10, 64)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.Error(err)
+			return
+		}
+		ownerID, err := strconv.Atoi(c.Param("owner_id"))
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			c.Error(err)
+			return
+		}
+
+		if err := wallet.Get(tx, groupID, nulls.NewInt(ownerID)); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(200, wallet)
 	})
 
 	return router

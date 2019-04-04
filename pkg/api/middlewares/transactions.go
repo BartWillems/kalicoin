@@ -27,8 +27,6 @@ func TransactionVerification() gin.HandlerFunc {
 			} else {
 				c.JSON(http.StatusCreated, transaction)
 			}
-		} else {
-			log.Info("Transaction does not exist")
 		}
 	}
 }
