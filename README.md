@@ -4,7 +4,7 @@
 
 ![alt text](kalicoin.png "Kalicoin Logo")
 
-Current status: pre-alpha
+Current status: public-beta
 
 ## Summary
 
