@@ -7,6 +7,7 @@ import (
 	"gitlab.com/bartwillems/kalicoin/pkg/db"
 	"gitlab.com/bartwillems/kalicoin/pkg/jaeger"
 
+	"github.com/gobuffalo/envy"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -31,7 +32,7 @@ func main() {
 
 	router := api.New(db.Conn)
 
-	if err := router.Run(":8000"); err != nil {
+	if err := router.Run(envy.Get("API_PORT", ":8000")); err != nil {
 		log.Fatal(err)
 	}
 

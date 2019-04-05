@@ -6,7 +6,8 @@ ENV ENVIRONMENT="development" \
     JAEGER_AGENT_HOST="jaeger" \
     JAEGER_AGENT_PORT="6831" \
     AUTH_USERNAME="octaaf" \
-    AUTH_PASSWORD="secret"
+    AUTH_PASSWORD="secret" \
+    API_PORT=":8000"
 
 WORKDIR /home/kalicoin
 

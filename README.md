@@ -43,6 +43,7 @@ postgres-kalicoin
 | JAEGER_SERVICE_NAME | Service name that will be shown on jaeger | `kalicoin`                                                     |
 | AUTH_USERNAME       | Basic Auth username for API access        | `octaaf`                                                       |
 | AUTH_PASSWORD       | Basic Auth password for API access        | `secret`                                                       |
+| API_PORT            | Port for the kalicoin api to bind on      | `:8000` or `0.0.0.0:8000` or `127.0.0.1:8000`                  |
 
 ## Non Functional Requirements
 
