@@ -88,7 +88,11 @@ func New(conn *pop.Connection) *gin.Engine {
 	router.GET("/wallets", func(c *gin.Context) {
 		var wallets models.Wallets
 
-		if err := tx.All(&wallets); err != nil {
+		err := tx.Transaction(func(tx *pop.Connection) error {
+			return tx.All(&wallets)
+		})
+
+		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
@@ -115,7 +119,11 @@ func New(conn *pop.Connection) *gin.Engine {
 			return
 		}
 
-		if err := wallet.Get(tx, groupID, nulls.NewInt(ownerID)); err != nil {
+		err = tx.Transaction(func(tx *pop.Connection) error {
+			return wallet.Get(tx, groupID, nulls.NewInt(ownerID))
+		})
+
+		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}

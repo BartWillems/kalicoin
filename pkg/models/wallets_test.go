@@ -6,6 +6,7 @@ import (
 	"gitlab.com/bartwillems/kalicoin/pkg/db"
 
 	"github.com/gobuffalo/nulls"
+	"github.com/gobuffalo/pop"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,8 +30,15 @@ func Test_Wallet(t *testing.T) {
 	// Wallet should not yet exist
 	assert.Error(t, err)
 
-	// Use the wallet API to ensure the user has a wallet
+	// It should be impossible to user wallet.Get outside of db transactions
 	err = wallet.Get(db.Conn, groupID, nulls.NewInt(userID))
+
+	assert.Error(t, err)
+
+	// Use the wallet API to ensure the user has a wallet
+	err = db.Conn.Transaction(func(tx *pop.Connection) error {
+		return wallet.Get(tx, groupID, nulls.NewInt(userID))
+	})
 
 	// The wallet should be created
 	assert.NoError(t, err)

@@ -15,12 +15,6 @@ type PaymentTransaction struct {
 
 // Create maps a payment to a real transaction and creates it
 func (p *PaymentTransaction) Create(tx *pop.Connection) (*Transaction, error) {
-	var wallet Wallet
-
-	if err := wallet.Get(tx, p.GroupID, nulls.NewInt(p.Sender)); err != nil {
-		return nil, err
-	}
-
 	transaction := Transaction{
 		GroupID: p.GroupID,
 		Sender:  nulls.NewInt(p.Sender),
@@ -28,5 +22,6 @@ func (p *PaymentTransaction) Create(tx *pop.Connection) (*Transaction, error) {
 		Type:    Payment,
 	}
 	err := tx.Create(&transaction)
+
 	return &transaction, err
 }

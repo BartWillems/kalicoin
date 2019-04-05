@@ -6,6 +6,7 @@ import (
 	"gitlab.com/bartwillems/kalicoin/pkg/db"
 
 	"github.com/gobuffalo/nulls"
+	"github.com/gobuffalo/pop"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -46,12 +47,16 @@ func Test_Transaction(t *testing.T) {
 	assert.Equal(t, Trade, transaction.Type)
 
 	// The sender should've lost money
-	err = senderWallet.Get(db.Conn, groupID, sender)
+	err = db.Conn.Transaction(func(tx *pop.Connection) error {
+		return senderWallet.Get(tx, groupID, sender)
+	})
 	assert.NoError(t, err)
 	assert.Equal(t, StarterCapital-amount, senderWallet.Capital)
 
 	// And the receiver should've gained the money
-	err = receiverWallet.Get(db.Conn, groupID, receiver)
+	err = db.Conn.Transaction(func(tx *pop.Connection) error {
+		return receiverWallet.Get(tx, groupID, receiver)
+	})
 	assert.NoError(t, err)
 	assert.Equal(t, StarterCapital+amount, receiverWallet.Capital)
 
@@ -71,7 +76,9 @@ func Test_Transaction(t *testing.T) {
 	assert.Equal(t, Succeeded, rewardTransaction.Status)
 	assert.Equal(t, Reward, rewardTransaction.Type)
 
-	err = receiverWallet.Get(db.Conn, groupID, receiver)
+	err = db.Conn.Transaction(func(tx *pop.Connection) error {
+		return receiverWallet.Get(tx, groupID, receiver)
+	})
 	assert.NoError(t, err)
 	assert.Equal(t, capital+PriceTable[Reward][nulls.NewString("checkin")], receiverWallet.Capital)
 }

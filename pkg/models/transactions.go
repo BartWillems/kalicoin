@@ -105,6 +105,35 @@ func (t *Transaction) getAmount() (uint32, error) {
 func (t *Transaction) BeforeCreate(tx *pop.Connection) error {
 	t.Status = Pending
 
+	err := tx.Transaction(func(tx *pop.Connection) error {
+		switch t.Type {
+
+		case Payment:
+			var wallet Wallet
+			return wallet.Get(tx, t.GroupID, t.Sender)
+
+		case Trade:
+			var senderWallet, receiverWallet Wallet
+			if err := senderWallet.Get(tx, t.GroupID, t.Sender); err != nil {
+				return err
+			}
+
+			if err := receiverWallet.Get(tx, t.GroupID, t.Receiver); err != nil {
+				return err
+			}
+
+		case Reward:
+			var wallet Wallet
+			return wallet.Get(tx, t.GroupID, t.Receiver)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
+
 	if t.Type == Payment || t.Type == Reward {
 		amount, err := t.getAmount()
 

@@ -39,6 +39,11 @@ func (w *Wallet) Get(tx *pop.Connection, GroupID int64, UserID nulls.Int) error 
 	if !UserID.Valid {
 		return errors.New("Empty UserID provided")
 	}
+
+	if err := tx.RawQuery("LOCK TABLE wallets IN ACCESS EXCLUSIVE MODE;").Exec(); err != nil {
+		return err
+	}
+
 	err := tx.Where("group_id = ?", GroupID).
 		Where("owner_id = ?", UserID).
 		First(w)
