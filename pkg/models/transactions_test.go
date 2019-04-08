@@ -80,5 +80,5 @@ func Test_Transaction(t *testing.T) {
 		return receiverWallet.Get(tx, groupID, receiver)
 	})
 	assert.NoError(t, err)
-	assert.Equal(t, capital+PriceTable[Reward][nulls.NewString("checkin")], receiverWallet.Capital)
+	assert.Equal(t, capital+PriceTable[Reward]["checkin"], receiverWallet.Capital)
 }

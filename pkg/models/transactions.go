@@ -67,15 +67,15 @@ type baseTransaction struct {
 }
 
 // PriceTable is a hashmap of the payment types with their prices
-var PriceTable = map[TransactionType]map[nulls.String]uint32{
+var PriceTable = map[TransactionType]map[string]uint32{
 	Payment: {
-		nulls.NewString("roll"):  2,
-		nulls.NewString("all"):   10,
-		nulls.NewString("quote"): 10,
+		"roll":  2,
+		"all":   10,
+		"quote": 10,
 	},
 	Reward: {
-		nulls.NewString("checkin"):  100,
-		nulls.NewString("kalivent"): 20,
+		"checkin":  100,
+		"kalivent": 20,
 	},
 }
 
@@ -88,7 +88,7 @@ func (t *Transaction) getAmount() (uint32, error) {
 		return 0, errors.New("Invalid transaction type")
 	}
 
-	amount, ok := PriceTable[t.Type][t.Cause]
+	amount, ok := PriceTable[t.Type][t.Cause.String]
 
 	if !ok {
 		return 0, errors.New("Invalid transaction cause")
