@@ -9,6 +9,7 @@ Current status: public-beta
 ## Summary
 
 Kalicoin (kc) is the proposed in-chat currency. This can be earned, spent, and exchanged.
+This project is in no way affiliated with [kalicoin.io](https://kalicoin.io/).
 
 The main objective is to set up an in-chat economy so that the spamming of certain commands can be reduced, and that users can reward each other when assistance is provided to each other.
 So-called "IRL" transactions can also be made with this, for example exchanging an agreed number of kc for a 3D printed object.
