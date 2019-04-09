@@ -12,6 +12,7 @@ import (
 	"gitlab.com/bartwillems/kalicoin/pkg/models"
 
 	"github.com/gobuffalo/envy"
+	"github.com/gobuffalo/nulls"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -135,7 +136,7 @@ func Test_Payments(t *testing.T) {
 	roll := models.RollReward{
 		GroupID:    groupID,
 		Receiver:   receiverID,
-		Multiplier: 0,
+		Multiplier: nulls.NewUInt32(0),
 	}
 
 	rollJSON, err := json.Marshal(roll)
@@ -157,5 +158,6 @@ func Test_Payments(t *testing.T) {
 	err = json.Unmarshal(w.Body.Bytes(), &transaction)
 
 	assert.NoError(t, err)
-	assert.Equal(t, 20, transaction.Amount)
+	assert.Equal(t, uint32(20), transaction.Amount)
+	assert.Equal(t, "roll - dubs", transaction.Cause.String)
 }
