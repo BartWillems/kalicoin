@@ -42,7 +42,7 @@ deploy-unstable:
     - docker push "${CONTAINER_IMAGE}:unstable-${CI_COMMIT_REF_NAME}"
   except:
     variables:
-      - $CI_COMMIT_TAG =~ /^release-.*$/
+      - $CI_COMMIT_TAG =~ /^v.*$/
 
 deploy-stable:
   stage: deploy
@@ -59,4 +59,4 @@ deploy-stable:
     - docker push "${CONTAINER_IMAGE}:latest"
   only:
     variables:
-      - $CI_COMMIT_TAG =~ /^release-.*$/
+      - $CI_COMMIT_TAG =~ /^v.*$/
