@@ -7,7 +7,6 @@ import (
 
 // TradeTransaction is a struct used for creating trades
 type TradeTransaction struct {
-	*baseTransaction
 	GroupID  int64  `json:"group_id" db:"group_id" binding:"required"`
 	Sender   int    `json:"sender" db:"sender" binding:"required"`
 	Receiver int    `json:"receiver" db:"receiver" binding:"required"`

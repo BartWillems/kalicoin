@@ -30,7 +30,7 @@ func Init() (io.Closer, error) {
 			Param: 1,
 		},
 		Reporter: &jaegercfg.ReporterConfig{
-			LogSpans:           envy.Get("ENVIRONMENT", "development") == "development",
+			LogSpans:           false,
 			LocalAgentHostPort: fmt.Sprintf("%v:%v", JaegerHost, JaegerPort),
 		},
 	}

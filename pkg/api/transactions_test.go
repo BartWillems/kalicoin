@@ -128,4 +128,34 @@ func Test_Payments(t *testing.T) {
 
 	assert.Equal(t, wallets[1].OwnerID, receivedWallets[1].OwnerID)
 	assert.Equal(t, wallets[1].Capital, receivedWallets[1].Capital)
+
+	// Creating transactions
+	w = httptest.NewRecorder()
+
+	roll := models.RollReward{
+		GroupID:    groupID,
+		Receiver:   receiverID,
+		Multiplier: 0,
+	}
+
+	rollJSON, err := json.Marshal(roll)
+
+	assert.NoError(t, err)
+
+	req, err = http.NewRequest("POST", "/rewards/roll", bytes.NewBuffer(rollJSON))
+
+	assert.NoError(t, err)
+
+	req.SetBasicAuth(username, password)
+
+	router.ServeHTTP(w, req)
+
+	// API call should succeed
+	assert.Equal(t, http.StatusCreated, w.Code)
+
+	var transaction models.Transaction
+	err = json.Unmarshal(w.Body.Bytes(), &transaction)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 20, transaction.Amount)
 }

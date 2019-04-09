@@ -57,15 +57,6 @@ func (t *Transactions) GetByType(tx *pop.Connection, tType TransactionType) erro
 	return tx.Where("type = ?", tType).All(&t)
 }
 
-type baseTransaction struct {
-	ID            int64             `json:"id" db:"id"`
-	Type          TransactionType   `json:"type" db:"type"`
-	Status        TransactionStatus `json:"status" db:"status"`
-	FailureReason nulls.String      `json:"failure_reason" db:"failure_reason"`
-	CreatedAt     time.Time         `json:"created_at" db:"created_at"`
-	UpdatedAt     time.Time         `json:"updated_at" db:"updated_at"`
-}
-
 // PriceTable is a hashmap of the payment types with their prices
 var PriceTable = map[TransactionType]map[string]uint32{
 	Payment: {
@@ -134,7 +125,7 @@ func (t *Transaction) BeforeCreate(tx *pop.Connection) error {
 		return err
 	}
 
-	if t.Type == Payment || t.Type == Reward {
+	if t.Type == Payment || t.Type == Reward && t.Amount == 0 {
 		amount, err := t.getAmount()
 
 		if err != nil {

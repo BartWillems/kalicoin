@@ -7,7 +7,6 @@ import (
 
 // PaymentTransaction is a struct used for creating payments
 type PaymentTransaction struct {
-	*baseTransaction
 	GroupID int64        `json:"group_id" db:"group_id" binding:"required"`
 	Sender  int          `json:"sender" db:"sender" binding:"required"`
 	Cause   nulls.String `json:"cause" db:"cause" binding:"required"`

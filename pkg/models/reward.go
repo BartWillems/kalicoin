@@ -7,7 +7,6 @@ import (
 
 // RewardTransaction is a struct used for creating rewards
 type RewardTransaction struct {
-	*baseTransaction
 	GroupID  int64        `json:"group_id" db:"group_id" binding:"required"`
 	Receiver int          `json:"receiver" db:"receiver" binding:"required"`
 	Cause    nulls.String `json:"cause" db:"cause" binding:"required"`

@@ -40,6 +40,7 @@ func New(conn *pop.Connection) *gin.Engine {
 	router.POST("/payments", payment)
 	router.POST("/trades", trade)
 	router.POST("/rewards", reward)
+	router.POST("/rewards/roll", roll)
 
 	router.GET("/pricetable", func(c *gin.Context) {
 		c.JSON(http.StatusOK, models.PriceTable)

@@ -74,3 +74,23 @@ func reward(c *gin.Context) {
 
 	c.Set("transaction", transaction)
 }
+
+func roll(c *gin.Context) {
+	var roll models.RollReward
+
+	if err := c.ShouldBindJSON(&roll); err != nil {
+		c.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"failure_reason": err.Error()})
+		return
+	}
+
+	transaction, err := roll.Create(tx)
+
+	if err != nil {
+		c.Error(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"failure_reason": err.Error()})
+		return
+	}
+
+	c.Set("transaction", transaction)
+}
