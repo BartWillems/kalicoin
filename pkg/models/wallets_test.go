@@ -24,21 +24,23 @@ func Test_Wallet(t *testing.T) {
 		assert.Fail(t, err.Error())
 	}
 
+	pop.Debug = true
+
 	// Fetch a new user's wallet
 	err := db.Conn.Where("owner_id = ?", userID).First(&wallet)
 
 	// Wallet should not yet exist
 	assert.Error(t, err)
 
-	// It should be impossible to user wallet.Get outside of db transactions
+	// wallet.Get should no longer create a wallet
 	err = wallet.Get(db.Conn, groupID, nulls.NewInt(userID))
 
 	assert.Error(t, err)
 
-	// Use the wallet API to ensure the user has a wallet
-	err = db.Conn.Transaction(func(tx *pop.Connection) error {
-		return wallet.Get(tx, groupID, nulls.NewInt(userID))
-	})
+	wallet.OwnerID = userID
+	wallet.GroupID = groupID
+
+	err = wallet.Create(db.Conn)
 
 	// The wallet should be created
 	assert.NoError(t, err)
@@ -47,15 +49,16 @@ func Test_Wallet(t *testing.T) {
 	assert.Equal(t, StarterCapital, wallet.Capital)
 
 	// Taking a small amount of money from the wallet should work
-	err = wallet.take(smallPayment)
+	err = wallet.pay(db.Conn, smallPayment)
 	assert.NoError(t, err)
-	assert.Equal(t, StarterCapital-smallPayment, wallet.Capital)
+	wallet.Get(db.Conn, groupID, nulls.NewInt(userID))
+	assert.EqualValues(t, StarterCapital-smallPayment, wallet.Capital)
 
 	// It should not be possible to take more money than what is left
-	err = wallet.take(wallet.Capital + 1)
+	err = wallet.pay(db.Conn, wallet.Capital+1)
 	assert.Error(t, err)
 
 	// But it should be possible to empty out your wallet!
-	err = wallet.take(wallet.Capital)
+	err = wallet.pay(db.Conn, StarterCapital-smallPayment)
 	assert.NoError(t, err)
 }

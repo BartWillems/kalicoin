@@ -180,6 +180,8 @@ func (t *Transaction) AfterCreate(tx *pop.Connection) error {
 
 // Trade takes money from the transaction sender's wallet and adds it to the receiver's wallet
 func (t *Transaction) trade(tx *pop.Connection) error {
+	return errors.New("Not implemented yet")
+
 	if err := t.pay(tx); err != nil {
 		return err
 	}
@@ -193,32 +195,20 @@ func (t *Transaction) trade(tx *pop.Connection) error {
 
 // Pay takes money from the transaction sender's wallet
 func (t *Transaction) pay(tx *pop.Connection) error {
-	var wallet Wallet
-
-	if err := wallet.Get(tx, t.GroupID, t.Sender); err != nil {
-		return err
+	wallet := Wallet{
+		GroupID: t.GroupID,
+		OwnerID: t.Sender.Int,
 	}
 
-	if err := wallet.take(t.Amount); err != nil {
-		return err
-	}
-
-	if err := tx.Update(&wallet); err != nil {
-		return err
-	}
-
-	return nil
+	return wallet.pay(tx, t.Amount)
 }
 
 // receive is a transaction where a user receives money
 func (t *Transaction) receive(tx *pop.Connection) error {
-	var wallet Wallet
-
-	if err := wallet.Get(tx, t.GroupID, t.Receiver); err != nil {
-		return err
+	wallet := Wallet{
+		GroupID: t.GroupID,
+		OwnerID: t.Receiver.Int,
 	}
 
-	wallet.Capital = wallet.Capital + t.Amount
-
-	return tx.Update(&wallet)
+	return wallet.reward(tx, t.Amount)
 }

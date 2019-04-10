@@ -6,7 +6,6 @@ import (
 
 	"github.com/gobuffalo/nulls"
 	"github.com/gobuffalo/pop"
-	log "github.com/sirupsen/logrus"
 )
 
 // Wallet is a chat member's wallet 🤔
@@ -25,13 +24,11 @@ const StarterCapital uint32 = 100
 // Wallets is a collection of wallets
 type Wallets []Wallet
 
-// create will create a user's wallet with the default StarterCapital
-func (w *Wallet) create(tx *pop.Connection, GroupID int64, UserID int) error {
-	w.OwnerID = UserID
-	w.GroupID = GroupID
+// Create will create a user's wallet with the default StarterCapital
+func (w *Wallet) Create(tx *pop.Connection) error {
 	w.Capital = StarterCapital
 
-	return tx.Save(w)
+	return tx.Create(w)
 }
 
 // Get fetches the user's wallet and creates it if it doesn't exist
@@ -40,27 +37,15 @@ func (w *Wallet) Get(tx *pop.Connection, GroupID int64, UserID nulls.Int) error 
 		return errors.New("Empty UserID provided")
 	}
 
-	if err := tx.RawQuery("LOCK TABLE wallets IN ACCESS EXCLUSIVE MODE;").Exec(); err != nil {
-		return err
-	}
-
-	err := tx.Where("group_id = ?", GroupID).
+	return tx.Where("group_id = ?", GroupID).
 		Where("owner_id = ?", UserID).
 		First(w)
-
-	if err == nil {
-		return nil
-	}
-
-	log.Infof("Attempting to create the wallet for user %v in group %v with capital %v", UserID.Int, GroupID, StarterCapital)
-	return w.create(tx, GroupID, UserID.Int)
 }
 
-func (w *Wallet) take(amount uint32) error {
-	if w.Capital < amount {
-		return errors.New("Not enough money in your wallet")
-	}
+func (w *Wallet) pay(tx *pop.Connection, amount uint32) error {
+	return tx.RawQuery("UPDATE wallets SET capital = capital - ? WHERE group_id = ? AND owner_id = ? RETURNING capital", amount, w.GroupID, w.OwnerID).Exec()
+}
 
-	w.Capital = w.Capital - amount
-	return nil
+func (w *Wallet) reward(tx *pop.Connection, amount uint32) error {
+	return tx.RawQuery("UPDATE wallets SET capital = capital + ? WHERE group_id = ? AND owner_id = ? RETURNING capital", amount, w.GroupID, w.OwnerID).Exec()
 }

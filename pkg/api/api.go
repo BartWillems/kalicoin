@@ -37,6 +37,7 @@ func New(conn *pop.Connection) *gin.Engine {
 		log.Info("Not using the Jaeger middleware as jaeger isn't initialized")
 	}
 
+	router.POST("/wallets", wallet)
 	router.POST("/payments", payment)
 	router.POST("/trades", trade)
 	router.POST("/rewards", reward)

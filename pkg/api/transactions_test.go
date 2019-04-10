@@ -3,7 +3,6 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -19,7 +18,6 @@ import (
 const transactionAmount = 10
 const groupID = 1
 const senderID = 1
-const receiverID = 2
 
 func Test_Payments(t *testing.T) {
 	// Setup the DB
@@ -58,21 +56,41 @@ func Test_Payments(t *testing.T) {
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, walletsJSON, w.Body.Bytes())
 
-	// Creating transactions
+	// Create first wallet
 	w = httptest.NewRecorder()
 
-	trade := models.TradeTransaction{
-		GroupID:  groupID,
-		Sender:   senderID,
-		Receiver: receiverID,
-		Amount:   transactionAmount,
+	wallet := models.Wallet{
+		GroupID: groupID,
+		OwnerID: senderID,
 	}
 
-	tradeJSON, err := json.Marshal(trade)
+	walletJSON, err := json.Marshal(wallet)
 
 	assert.NoError(t, err)
 
-	req, err = http.NewRequest("POST", "/trades", bytes.NewBuffer(tradeJSON))
+	req, err = http.NewRequest("POST", "/wallets", bytes.NewBuffer(walletJSON))
+
+	assert.NoError(t, err)
+
+	req.SetBasicAuth(username, password)
+
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusCreated, w.Code)
+
+	// Creating transactions
+	w = httptest.NewRecorder()
+
+	payment := models.PaymentTransaction{
+		GroupID: groupID,
+		Sender:  senderID,
+		Cause:   nulls.NewString("roll"),
+	}
+
+	paymentJSON, err := json.Marshal(payment)
+
+	assert.NoError(t, err)
+
+	req, err = http.NewRequest("POST", "/payments", bytes.NewBuffer(paymentJSON))
 
 	assert.NoError(t, err)
 
@@ -82,60 +100,12 @@ func Test_Payments(t *testing.T) {
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 
-	// List wallets after transactions
-	w = httptest.NewRecorder()
-
-	wallets = models.Wallets{
-		models.Wallet{
-			GroupID: groupID,
-			OwnerID: senderID,
-			Capital: models.StarterCapital - transactionAmount,
-		},
-		models.Wallet{
-			GroupID: groupID,
-			OwnerID: receiverID,
-			Capital: models.StarterCapital + transactionAmount,
-		},
-	}
-	walletsJSON, _ = json.Marshal(wallets)
-	req, _ = http.NewRequest("GET", "/wallets", nil)
-
-	req.SetBasicAuth(username, password)
-
-	router.ServeHTTP(w, req)
-
-	assert.Equal(t, 200, w.Code)
-
-	var receivedWallets models.Wallets
-	err = json.Unmarshal(w.Body.Bytes(), &receivedWallets)
-
-	assert.NoError(t, err)
-	assert.Equal(t, 2, len(receivedWallets))
-
-	if len(receivedWallets) != 2 {
-		assert.FailNow(
-			t,
-			fmt.Sprintf("Unable to continue the tests as an invalid wallets response has been given (%v wallets received, 2 expected)", len(receivedWallets)),
-		)
-	}
-
-	// Order the received wallets for easier testing
-	if receivedWallets[0].OwnerID != senderID {
-		receivedWallets[0], receivedWallets[1] = receivedWallets[1], receivedWallets[0]
-	}
-
-	assert.Equal(t, wallets[0].OwnerID, receivedWallets[0].OwnerID)
-	assert.Equal(t, wallets[0].Capital, receivedWallets[0].Capital)
-
-	assert.Equal(t, wallets[1].OwnerID, receivedWallets[1].OwnerID)
-	assert.Equal(t, wallets[1].Capital, receivedWallets[1].Capital)
-
 	// Creating transactions
 	w = httptest.NewRecorder()
 
 	roll := models.RollReward{
 		GroupID:    groupID,
-		Receiver:   receiverID,
+		Receiver:   senderID,
 		Multiplier: nulls.NewUInt32(0),
 	}
 
